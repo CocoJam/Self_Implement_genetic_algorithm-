@@ -6,7 +6,7 @@ public class Individual implements Runnable {
     private Genes[] gene;
     private double fitness;
     private Genes targetGene;
-
+    private Genes currentBestGene;
 
     public Individual(Genes targetGene) {
         //Everyone has 10 genes, and each genes consist of 20 bases/ byte size
@@ -17,6 +17,7 @@ public class Individual implements Runnable {
         }
         fitness = Math.random();
         this.targetGene = targetGene;
+        this.currentBestGene = gene[0];
         this.run();
     }
 
@@ -79,7 +80,7 @@ public class Individual implements Runnable {
         // Threaded to view the constant mutations
         while (true) {
             double randomChances = (int) (Math.random() * 100) + 1;
-            if (randomChances > 90) {
+            if (randomChances >= 90) {
                 mutations();
                 fitnessAssessment(targetGene);
                 System.err.println("Mutation occured");

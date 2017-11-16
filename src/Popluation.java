@@ -17,7 +17,7 @@ public class Popluation {
     }
 
     public ArrayList<Individual> getIndividualList() {
-            return individualList;
+        return individualList;
     }
 
     public void setIndividualList(ArrayList<Individual> individualList) {
@@ -27,7 +27,8 @@ public class Popluation {
     public Popluation(int popNumber) {
         this.popNumber = popNumber;
     }
-    public void generatingPopluation (){
+
+    public void generatingPopluation() {
         for (int i = 0; i < popNumber; i++) {
             Individual individual = new Individual(targetGene);
             individualList.add(individual);
@@ -35,6 +36,6 @@ public class Popluation {
     }
 
     public static void main(String[] args) {
-        
+
     }
 }
