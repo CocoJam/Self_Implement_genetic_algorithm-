@@ -1,14 +1,18 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by ljam763 on 16/11/2017.
  */
 public class Popluation {
     private int popNumber;
-    private ArrayList<Individual> individualList = new ArrayList<>();
+    //    private synchronized ArrayList<Individual> individualList = new ArrayList<>();
+    private List<Individual> individualList = Collections.synchronizedList(new ArrayList<Individual>());
     private Genes targetGene;
+    private IndividualComparator individualComparator = new IndividualComparator();
+    private Thread MutationAndComparionsthread;
 
     public int getPopNumber() {
         return popNumber;
@@ -18,14 +22,13 @@ public class Popluation {
         this.popNumber = popNumber;
     }
 
-    public ArrayList<Individual> getIndividualList() {
+    public List<Individual> getIndividualList() {
         return individualList;
     }
 
     public void setIndividualList(ArrayList<Individual> individualList) {
         this.individualList = individualList;
     }
-
 
 
     public Popluation(int popNumber, Genes targetGene) {
@@ -36,58 +39,113 @@ public class Popluation {
     }
 
     private void threadStarting(Genes targetGene) {
+//        CrossOverThread();
 //        mutationThread(targetGene);
-//        ComparsionThread();
         MutationAndComparsionThread(targetGene);
     }
 
+    private void Checker(Genes targetGene) {
+
+        Individual individual = individualList.get(0);
+
+
+        for (Individual individual1 : individualList) {
+            if (identicalGene(individual1.getCurrentBestGene())) {
+
+                individual = individual1;
+
+                System.out.println(individual.getFitness());
+                for (byte b : individual.getCurrentBestGene().getBaseSequence()) {
+                    System.out.print(b + " ");
+                }
+                System.out.println();
+                for (byte b : targetGene.getBaseSequence()) {
+                    System.out.print(b + " ");
+                }
+                try {
+                    if (MutationAndComparionsthread.isAlive()) {
+                        System.out.println("interrupt");
+                        MutationAndComparionsthread.interrupt();
+                        break;
+                    }
+                } catch (NullPointerException e) {
+                    System.out.println(e);
+                    MutationAndComparionsthread.stop();
+                    break;
+                }
+
+            }
+        }
+
+    }
+
+    private boolean identicalGene (Genes genes){
+        for (int i = 0; i < genes.getBaseSequence().length; i++) {
+            if (genes.getBaseSequence()[i] != targetGene.getBaseSequence()[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void MutationAndComparsionThread(Genes targetGene) {
-        Thread thread = new Thread(new Runnable() {
+        Thread MutationAndComparionsthread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
+                    //Mutation
 //                    System.out.println("Mutation");
                     for (Individual individual : individualList) {
                         individual.mutations();
                         individual.fitnessAssessment(targetGene);
                     }
-//                    System.out.println("Comparsion");
-                    IndividualComparator individualComparator = new IndividualComparator();
+                    //CrossOver
+//                    IndividualComparator individualComparator = new IndividualComparator();
                     Collections.sort(individualList, individualComparator);
                     int currentListSize = individualList.size();
 //                    System.out.println("size "+ currentListSize);
-                    for (int i = 0; i < currentListSize-1; i++) {
-                        Individual individual = individualList.get(i).crossOver(individualList.get(i+1));
+                    for (int i = 0; i < currentListSize - 1; i++) {
+                        Individual individual = individualList.get(i).crossOver(individualList.get(i + 1));
                         individualList.add(individual);
                     }
-                    Individual individual = individualList.get(currentListSize-1).crossOver(individualList.get(0));
+                    Individual individual = individualList.get(currentListSize - 1).crossOver(individualList.get(0));
                     individualList.add(individual);
                     Collections.sort(individualList, individualComparator);
-                    for (int i = individualList.size()-1; i >= currentListSize; i--) {
-                        System.out.println(i);
+                    for (int i = individualList.size() - 1; i >= currentListSize; i--) {
+//                        System.out.println(i);
                         individualList.remove(i);
                     }
+                    printPoplationFitness();
+                    Checker(targetGene);
 //                    System.out.println("size "+ individualList.size());
-                    for (Individual individuals : individualList) {
-                        System.out.println(individual.getFitness());
-                    }
                 }
             }
         });
-        thread.start();
+        MutationAndComparionsthread.start();
     }
 
-    private void ComparsionThread() {
+    private void CrossOverThread() {
         Thread threadComparsion = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    System.out.println("Comparsion");
-                    Collections.sort(individualList, new IndividualComparator());
-                    for (Individual individual : individualList) {
-
-                        System.out.println(individual.getFitness());
+                    System.out.println("CrossOver");
+//                    Collections.sort(individualList, new IndividualComparator());
+                    int currentListSize = individualList.size();
+//                    System.out.println("size "+ currentListSize);
+                    for (int i = 0; i < currentListSize - 1; i++) {
+                        Individual individual = individualList.get(i).crossOver(individualList.get(i + 1));
+                        individualList.add(individual);
                     }
+                    Individual individual = individualList.get(currentListSize - 1).crossOver(individualList.get(0));
+                    individualList.add(individual);
+                    Collections.sort(individualList, individualComparator);
+                    for (int i = individualList.size() - 1; i >= currentListSize; i--) {
+//                        System.out.println(i);
+                        individualList.remove(i);
+                    }
+                    Collections.sort(individualList, individualComparator);
+                    printPoplationFitness ();
                 }
             }
         });
@@ -98,12 +156,14 @@ public class Popluation {
         Thread threadMutation = new Thread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("Mutation run");
                 while (true) {
-                    System.out.println("Mutation");
+                    System.err.println("Mutation");
                     for (Individual individual : individualList) {
                         individual.mutations();
                         individual.fitnessAssessment(targetGene);
                     }
+                    Collections.sort(individualList, individualComparator);
                 }
             }
         });
@@ -114,6 +174,13 @@ public class Popluation {
         for (int i = 0; i < popNumber; i++) {
             Individual individual = new Individual(targetGene);
             individualList.add(individual);
+        }
+    }
+
+    public void printPoplationFitness() {
+        System.out.println("printing");
+        for (Individual individuals : individualList) {
+            System.out.println(individuals.getFitness());
         }
     }
 

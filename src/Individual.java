@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import java.util.Random;
 
 /**
  * Created by ljam763 on 16/11/2017.
@@ -9,6 +10,7 @@ public class Individual {
     private double fitness;
     private Genes targetGene;
     private Genes currentBestGene;
+    private Random random= new Random();
 
     public Genes getTargetGene() {
         return targetGene;
@@ -90,19 +92,22 @@ public class Individual {
     public void mutations() {
         double randomChances = (int) (Math.random() * 100) + 1;
 //        if (randomChances >= 90) {
-            int randomSelectionOfGene = (int) (Math.random() * gene.length);
-            int plusOrMinus = (int) Math.round(Math.random());
-            //Could be biopolar or bidirectional
-            if (plusOrMinus > 0) {
-                plusOrMinus = 1;
-            } else {
-                plusOrMinus = -1;
-            }
-            // Selecting a gene from this individual
-            byte[] sequenceForMutation = gene[randomSelectionOfGene].getBaseSequence();
-            // Selecting the base required to be mutated based on the given gene selected.
-            int randomSelectionOfBase = (int) (Math.random() * sequenceForMutation.length);
-            sequenceForMutation[randomSelectionOfBase] += (byte) plusOrMinus;
+        int randomSelectionOfGene = (int) (Math.random() * gene.length);
+//            int plusOrMinus = (int) Math.round(Math.random());
+//            int radomAmountOfMutation = (int) (Math.random() *10 +1);
+        //Could be biopolar or bidirectional
+        byte[] bytes = new byte[1];
+        random.nextBytes(bytes);
+//            if (plusOrMinus > 0) {
+//                plusOrMinus = radomAmountOfMutation;
+//            } else {
+//                plusOrMinus = -1 * radomAmountOfMutation;
+//            }
+        // Selecting a gene from this individual
+        byte[] sequenceForMutation = gene[randomSelectionOfGene].getBaseSequence();
+        // Selecting the base required to be mutated based on the given gene selected.
+        int randomSelectionOfBase = (int) (Math.random() * sequenceForMutation.length);
+        sequenceForMutation[randomSelectionOfBase] = bytes[0];
 //        }
 
 //        System.err.println("Mutation occured at gene: " + randomSelectionOfBase + " at base number of " + randomSelectionOfBase + " by " + plusOrMinus);
@@ -112,7 +117,7 @@ public class Individual {
         Individual individual = new Individual(targetGene);
         Genes[] genes = new Genes[gene.length];
         for (int i = 0; i < this.getGene().length; i++) {
-             genes[i] = this.getGene()[i].crossOver(other.getGene()[i]);
+            genes[i] = this.getGene()[i].crossOver(other.getGene()[i]);
         }
         individual.setGene(genes);
         return individual;
