@@ -104,6 +104,7 @@ public class Popluation {
                     //CrossOver
 //                    IndividualComparator individualComparator = new IndividualComparator();
                     Collections.sort(individualList, individualComparator);
+                    Checker(targetGene);
                     int currentListSize = individualList.size();
 //                    System.out.println("size "+ currentListSize);
                     for (int i = 0; i < currentListSize - 1; i++) {
@@ -113,6 +114,7 @@ public class Popluation {
                     Individual individual = individualList.get(currentListSize - 1).crossOver(individualList.get(0));
                     individualList.add(individual);
                     Collections.sort(individualList, individualComparator);
+                    Checker(targetGene);
                     for (int i = individualList.size() - 1; i >= currentListSize; i--) {
 //                        System.out.println(i);
                         individualList.remove(i);
