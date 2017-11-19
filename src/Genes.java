@@ -24,7 +24,14 @@ public class Genes {
 
     public Genes(int baseSize) {
         this.baseSequence = new byte[baseSize];
-        random.nextBytes(baseSequence);
+        for (int i = 0; i<baseSize; i++){
+            int randomBinary = random.nextInt(2);
+            String binaryNumber = Integer.toBinaryString(randomBinary);
+            baseSequence[i] = Byte.parseByte(binaryNumber);
+        }
+//        int randomBinary = random.nextInt();
+//        String binaryNumber = Integer.toBinaryString(randomBinary);
+//        random.nextBytes(baseSequence);
     }
 
     public Genes(byte[] gene) {
@@ -32,17 +39,35 @@ public class Genes {
 
     }
 
+    public int geneMatchingHammingDistance (Genes target){
+        byte[] targetByte = target.getBaseSequence();
+        int fitnessAcc = 0;
+        for (int i =0; i< targetByte.length;i++){
+            if (targetByte[i] != baseSequence[i]){
+                fitnessAcc++;
+            }
+        }
+        return fitnessAcc;
+    }
+
     public double geneMatchingBasedOnEuclideanDistance(Genes target) {
         byte[] targetByte = target.getBaseSequence();
-        double differencesSummation = 0.0;
-        for (int i = 0; i < targetByte.length; i++) {
-            differencesSummation += targetByte[i] - baseSequence[i];
-
+        double fitnessAcc = 0.0;
+        for (int i =0; i< targetByte.length;i++){
+            if (targetByte[i] != baseSequence[i]){
+                fitnessAcc++;
+            }
         }
-        differencesSummation = Math.abs(differencesSummation);
-        differencesSummation = Math.sqrt(differencesSummation);
-        fitness = differencesSummation;
-        return differencesSummation;
+        fitness = fitnessAcc;
+        return fitnessAcc;
+//        double differencesSummation = 0.0;
+//        for (int i = 0; i < targetByte.length; i++) {
+//            differencesSummation += targetByte[i] - baseSequence[i];
+//        }
+//        differencesSummation = Math.abs(differencesSummation);
+//        differencesSummation = Math.sqrt(differencesSummation);
+//        fitness = differencesSummation;
+//        return differencesSummation;
     }
 
     public Genes crossOver(Genes other) {
@@ -78,5 +103,9 @@ public class Genes {
         genes2.printGene();
         Genes genes1 = genes.crossOver(genes2);
         genes1.printGene();
+        Random random = new Random();
+        int randomBinary = random.nextInt(2);
+        String binary = Integer.toBinaryString(randomBinary);
+        System.out.println(Integer.toBinaryString(randomBinary));
     }
 }

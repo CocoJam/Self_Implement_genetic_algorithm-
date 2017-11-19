@@ -13,6 +13,7 @@ public class Popluation {
     private Genes targetGene;
     private IndividualComparator individualComparator = new IndividualComparator();
     private Thread MutationAndComparionsthread;
+    private String namePop;
 
     public int getPopNumber() {
         return popNumber;
@@ -31,7 +32,8 @@ public class Popluation {
     }
 
 
-    public Popluation(int popNumber, Genes targetGene) {
+    public Popluation(int popNumber, Genes targetGene, String namePop) {
+        this.namePop = namePop;
         this.popNumber = popNumber;
         this.targetGene = targetGene;
         generatingPopluation();
@@ -51,17 +53,10 @@ public class Popluation {
 
         for (Individual individual1 : individualList) {
             if (identicalGene(individual1.getCurrentBestGene())) {
-
                 individual = individual1;
-
                 System.out.println(individual.getFitness());
-                for (byte b : individual.getCurrentBestGene().getBaseSequence()) {
-                    System.out.print(b + " ");
-                }
-                System.out.println();
-                for (byte b : targetGene.getBaseSequence()) {
-                    System.out.print(b + " ");
-                }
+                individual.getCurrentBestGene().printGene();
+                targetGene.printGene();
                 try {
                     if (MutationAndComparionsthread.isAlive()) {
                         System.out.println("interrupt");
@@ -69,8 +64,6 @@ public class Popluation {
                         break;
                     }
                 } catch (NullPointerException e) {
-//                    System.out.println(e);
-//                    MutationAndComparionsthread.stop();
                     System.exit(0);
                 }
 
@@ -121,7 +114,7 @@ public class Popluation {
                     }
                     printPoplationFitness();
                     Checker(targetGene);
-                    System.out.println("The given turnover rate: "+turnOverRate);
+                    System.out.println("The given "+ namePop + " turnover rate: "+turnOverRate);
 //                    System.out.println("size "+ individualList.size());
                 }
             }
@@ -190,8 +183,10 @@ public class Popluation {
     }
 
     public static void main(String[] args) {
-        Genes targetGene = new Genes(5);
-        Popluation popluation = new Popluation(5, targetGene);
+        Genes targetGene = new Genes(100);
+        Popluation popluation = new Popluation(10, targetGene, "population one");
+        Popluation popluation1 = new Popluation(10, targetGene, "population two");
+        Popluation popluation2 = new Popluation(10, targetGene, "population three");
     }
 
 }

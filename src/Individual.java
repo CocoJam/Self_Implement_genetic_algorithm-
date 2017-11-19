@@ -74,7 +74,7 @@ public class Individual {
         // get eval by using the given gene which is 10 for example, then using the number of bases to check for hamming distances.
         Genes lowestNumber = gene[0];
         for (Genes genes : gene) {
-            double fitnessNumber = genes.geneMatchingBasedOnEuclideanDistance(targetGene);
+            genes.geneMatchingBasedOnEuclideanDistance(targetGene);
             if (isLessInFitness(lowestNumber, genes)) {
                 lowestNumber = genes;
 //                System.out.println("Changed");
@@ -98,6 +98,9 @@ public class Individual {
         //Could be biopolar or bidirectional
         byte[] bytes = new byte[1];
         random.nextBytes(bytes);
+        int randomBinary = random.nextInt(2);
+        String binaryNumber = Integer.toBinaryString(randomBinary);
+
 //            if (plusOrMinus > 0) {
 //                plusOrMinus = radomAmountOfMutation;
 //            } else {
@@ -107,7 +110,7 @@ public class Individual {
         byte[] sequenceForMutation = gene[randomSelectionOfGene].getBaseSequence();
         // Selecting the base required to be mutated based on the given gene selected.
         int randomSelectionOfBase = (int) (Math.random() * sequenceForMutation.length);
-        sequenceForMutation[randomSelectionOfBase] = bytes[0];
+        sequenceForMutation[randomSelectionOfBase] = Byte.parseByte(binaryNumber);;
 //        }
 
 //        System.err.println("Mutation occured at gene: " + randomSelectionOfBase + " at base number of " + randomSelectionOfBase + " by " + plusOrMinus);
