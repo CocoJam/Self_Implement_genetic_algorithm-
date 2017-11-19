@@ -27,7 +27,7 @@ public class Genes {
         random.nextBytes(baseSequence);
     }
 
-    public Genes(byte[] gene){
+    public Genes(byte[] gene) {
         this.baseSequence = gene;
 
     }
@@ -46,32 +46,37 @@ public class Genes {
     }
 
     public Genes crossOver(Genes other) {
-        int numberOfCross = (int) (Math.random() * 3 + 1);
-        int[] randomPosition = new int[numberOfCross];
-        for (int i : randomPosition) {
-            i = (int) (Math.random() * this.getBaseSequence().length);
-        }
-        Arrays.sort(randomPosition);
-        boolean turnOver = true;
+        int numberOfCross = 1;
+
+        int randomPosition = (int) (Math.random() * (this.getBaseSequence().length - 1)) + 1;
+
         byte[] sampling = new byte[baseSequence.length];
-        for (int j = 0; j < randomPosition[0]; j++) {
+        for (int j = 0; j < randomPosition; j++) {
             sampling[j] = this.getBaseSequence()[j];
         }
-        for (int i = 1; i < numberOfCross-1; i++) {
-                for (int j = randomPosition[i]; j < randomPosition[i+1]; j++) {
-                    if (turnOver) {
-                    sampling[j] = this.getBaseSequence()[j];}
-                    else {
-                        sampling[j] =other.getBaseSequence()[j];
-                    }
-                }
-            turnOver = !turnOver;
+        for (int j = randomPosition; j < sampling.length; j++) {
+            sampling[j] = other.getBaseSequence()[j];
         }
         return new Genes(sampling);
+
+    }
+
+    public String printGene() {
+        String geneSequence = "";
+        for (byte b : this.baseSequence) {
+            System.out.print(b + " ");
+            geneSequence += b;
+        }
+        System.out.println();
+        return geneSequence;
     }
 
     public static void main(String[] args) {
-        Genes genes = new Genes(20);
-
+        Genes genes = new Genes(10);
+        genes.printGene();
+        Genes genes2 = new Genes(10);
+        genes2.printGene();
+        Genes genes1 = genes.crossOver(genes2);
+        genes1.printGene();
     }
 }

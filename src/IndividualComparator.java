@@ -6,8 +6,6 @@ import java.util.Comparator;
 public class IndividualComparator implements Comparator<Individual> {
     @Override
     public int compare(Individual o1, Individual o2) {
-//        System.out.println("Comparing");
-//        System.out.println(o1.getFitness() + " "+ o2.getFitness());
-        return (int) Math.round(o1.getFitness()-o2.getFitness());
+        return Double.compare(o1.getFitness(),o2.getFitness());
     }
 }

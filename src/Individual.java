@@ -123,6 +123,13 @@ public class Individual {
         return individual;
     }
 
+    public void printOutGene (){
+        this.fitnessAssessment(targetGene);
+        for (Genes genes : this.getGene()) {
+            genes.printGene();
+        }
+        System.out.println();
+    }
 //    @Override
 //    public void run() {
 //        // Threaded to view the constant mutations
@@ -141,9 +148,17 @@ public class Individual {
 
         Genes targetGene = new Genes(20);
         Individual individual = new Individual(targetGene);
-        for (byte b : targetGene.getBaseSequence()) {
-            System.out.print(b + " ");
-        }
+        Individual individual1 = new Individual(targetGene);
+        System.out.println("Target Gene");
+        targetGene.printGene();
+        System.out.println("Individual one");
+        individual.printOutGene();
+        System.out.println("Individual two");
+        individual1.printOutGene();
+        Individual individual2 = individual.crossOver(individual1);
+        System.out.println("Crossed over");
+        individual2.printOutGene();
+
 //        individual.fitnessAssessment(targetGene);
     }
 

@@ -69,9 +69,9 @@ public class Popluation {
                         break;
                     }
                 } catch (NullPointerException e) {
-                    System.out.println(e);
-                    MutationAndComparionsthread.stop();
-                    break;
+//                    System.out.println(e);
+//                    MutationAndComparionsthread.stop();
+                    System.exit(0);
                 }
 
             }
@@ -92,7 +92,9 @@ public class Popluation {
         Thread MutationAndComparionsthread = new Thread(new Runnable() {
             @Override
             public void run() {
+                int turnOverRate = 0;
                 while (!Thread.currentThread().isInterrupted()) {
+                    turnOverRate++;
                     //Mutation
 //                    System.out.println("Mutation");
                     for (Individual individual : individualList) {
@@ -117,6 +119,7 @@ public class Popluation {
                     }
                     printPoplationFitness();
                     Checker(targetGene);
+                    System.out.println("The given turnover rate: "+turnOverRate);
 //                    System.out.println("size "+ individualList.size());
                 }
             }
@@ -185,33 +188,8 @@ public class Popluation {
     }
 
     public static void main(String[] args) {
-        Genes targetGene = new Genes(20);
+        Genes targetGene = new Genes(5);
         Popluation popluation = new Popluation(5, targetGene);
-
     }
 
-//    @Override
-//    public void run() {
-//        System.out.println("Start comparing");
-//
-//
-//
-//        while (true) {
-//            for (Individual individual : individualList) {
-//                individual.mutations();
-//                individual.fitnessAssessment(targetGene);
-//            }
-//            Collections.sort(individualList, new IndividualComparator());
-//            for (Individual individual : individualList) {
-//                System.out.println(individual.getFitness());
-//            }
-//        }
-//    }
-
-//    @Override
-//    public int compare(Individual o1, Individual o2) {
-//        System.out.println("Comparing");
-//        System.out.println(o1.getFitness() + " "+ o2.getFitness());
-//        return (int) Math.round(o1.getFitness()-o2.getFitness());
-//    }
 }
